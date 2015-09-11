@@ -96,6 +96,20 @@ var handlers = {
     
   },
   
+  dirty: function(){
+    var $name = $('#lw-tabs').find('.active .lw-name');
+    var name = $name.text();
+    
+    $name.text(name + ' *');
+  },
+  
+  saved: function(){
+    var $name = $('#lw-tabs').find('.active .lw-name');
+    var name = $name.text();
+    
+    $name.text(name.replace(' *', ''));
+  },
+  
   openFileInExplorerOrFinder: function(e){
     var filePath; 
     
@@ -167,3 +181,5 @@ $tabsContainer.on('dblclick', '.lw-tab', handlers.openFileInExplorerOrFinder);
 $tabsContainer.on('click', '.lw-tab', handlers.switchDocuments);
 
 messenger.subscribe.file('pathChanged', handlers.pathChanged);
+messenger.subscribe.file('dirty', handlers.dirty);
+messenger.subscribe.file('saved', handlers.saved);

@@ -10,7 +10,26 @@ var
   editor,
   session,
   currentFile = {},
-  noop = function(){};
+  noop = function(){},
+  currentPath,
+  publishFileDirty,
+  editFileCount = -1,
+  resetFileEditCount;
+  
+resetFileEditCount = function(){
+  editFileCount = -1;
+};
+  
+publishFileDirty = function(){
+  // only want to publish message on first edit
+  // after contents are loaded into the editor
+  editFileCount++;
+  if(editFileCount === 1){
+    messenger.publish.file('dirty', { path: currentPath });
+  } else if(editFileCount > 1){
+    editFileCount = 1; // stop the count from getting too big
+  }
+};
   
 module.load = function (mode) {
 
@@ -54,15 +73,14 @@ module.load = function (mode) {
   require('./clipboard.js').init(editor);
   require('./formatting.js').init(editor);
 
-  var onChange = function () {
+  var onInput = function (e) { debugger;
     currentFile.contents = editor.getValue();
     messenger.publish.file('sourceChange', currentFile);
+    publishFileDirty();
   };
 
-  onChange();
-
-  editor.on('change', onChange);
-  
+  editor.on('input', onInput);
+    
   editor.focus();
   
   var handlers = {
@@ -73,6 +91,24 @@ module.load = function (mode) {
     
     fileNew: function(){
       editor.scrollToLine(0);
+      resetFileEditCount();
+    },
+    
+    open: function(){
+      resetFileEditCount();
+    },
+    
+    pathChanged: function(fileInfo){
+      currentPath = fileInfo.path;
+      resetFileEditCount();
+    },
+    
+    saved: function(pathInfo){
+      resetFileEditCount();
+    },
+    
+    selected: function(){
+      resetFileEditCount();
     },
     
     contentChanged: function(fileInfo){
@@ -106,8 +142,13 @@ module.load = function (mode) {
   };
   
   messenger.subscribe.menu('new', handlers.menuNew);
-  messenger.subscribe.file('contentChanged', handlers.contentChanged);
+  
   messenger.subscribe.file('new', handlers.fileNew);
+  messenger.subscribe.file('opened', handlers.open);
+  messenger.subscribe.file('contentChanged', handlers.contentChanged);
+  messenger.subscribe.file('pathChanged', handlers.pathChanged);
+  messenger.subscribe.file('saved', handlers.saved);  
+  messenger.subscribe.file('selected', handlers.selected);  
 };
 
 module.load('asciidoc');

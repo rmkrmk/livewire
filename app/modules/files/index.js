@@ -21,6 +21,15 @@ var getIndex = function(info){
 	});
 };
 
+var setDirty = function(filePath, isDirty){
+	for(var i = 0; i < files.length; i++){
+		if(files[i].path.toLowerCase() === filePath.toLowerCase()){
+			files[i].isDirty = isDirty;
+			break;
+		}
+	}
+};
+
 var handlers = {
 	opened: function(data){
 		files.push(data);
@@ -42,6 +51,14 @@ var handlers = {
 		}
 		
 		messenger.publish.file('contentChanged', fileInfo);
+	},
+	
+	dirty: function(pathInfo){
+		setDirty(pathInfo.path, true);
+	},
+	
+	saved: function(pathInfo){
+		setDirty(pathInfo.path, false);
 	},
 	
 	beforeFileSelected: function(cursorInfo){
@@ -82,3 +99,5 @@ messenger.subscribe.file('closed', handlers.closed);
 messenger.subscribe.file('selected', handlers.fileSelected);
 messenger.subscribe.file('new', handlers.fileSelected);
 messenger.subscribe.file('beforeSelected', handlers.beforeFileSelected);
+messenger.subscribe.file('dirty', handlers.dirty);
+messenger.subscribe.file('saved', handlers.saved);

@@ -126,6 +126,7 @@ var menuHandlers = {
   
         fs.writeFile(filePath, fileContent, { encoding: 'utf8' }, function (err) {
           // todo: handle error
+          messenger.publish.file('saved', { path: filePath });
         });
       } else {
         menuHandlers.saveAs(data, envelope);
