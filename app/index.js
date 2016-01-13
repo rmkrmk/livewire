@@ -8,6 +8,7 @@ require.main.require('./modules/results');
 require.main.require('./modules/editor');
 require.main.require('./modules/footer');
 require.main.require('./modules/help');
+require.main.require('./modules/metadata');
 
 $(function(){
 	$('body').fadeIn('50');

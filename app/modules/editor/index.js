@@ -112,6 +112,9 @@ module.load = function (mode) {
       var rowNumber;
       
       if(_.isObject(fileInfo)){
+        var parts = fileInfo.contents.split('|metadata|');
+        editor.metadata = JSON.parse(parts[1]);
+        fileInfo.contents = fileInfo.contents.split("|metadata|\r\n-->\r\n").pop().split("|metadata|\n////\n").pop().split("|metadata|\r\n////\r\n").pop();
         
         activateEditor();
         

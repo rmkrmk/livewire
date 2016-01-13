@@ -117,6 +117,12 @@ var menuHandlers = {
 
     editor = ace.edit('editor');
     fileContent = editor.getValue();
+        // TODO:
+    if (formatter.name == "Markdown") {
+      fileContent = "<!--\r\n|metadata|\r\n" + JSON.stringify(editor.metadata, null, 4).replace("\n", "\r\n") + "\r\n|metadata|\r\n-->\r\n" + fileContent;
+    } else {
+      fileContent = "////\r\n|metadata|\r\n" + JSON.stringify(editor.metadata, null, 4).replace("\n", "\r\n") + "\r\n|metadata|\r\n////\r\n" + fileContent;
+    }
     
     if(fileContent.length > 0){
       if (filePath.length > 0) {
@@ -138,6 +144,13 @@ var menuHandlers = {
 
     editor = ace.edit('editor');
     fileContent = editor.getValue();
+    
+    // TODO:
+    if (formatter.name == "Markdown") {
+      fileContent = "<!--\r\n|metadata|\r\n" + JSON.stringify(editor.metadata, null, 4).replace("\n", "\r\n") + "\r\n|metadata|\r\n-->\r\n" + fileContent;
+    } else {
+      fileContent = "////\r\n|metadata|\r\n" + JSON.stringify(editor.metadata, null, 4).replace("\n", "\r\n") + "\r\n|metadata|\r\n////\r\n" + fileContent;
+    }
 
     options = {
       title: 'Save File',
