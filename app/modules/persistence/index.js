@@ -14,6 +14,7 @@ var
   
   editor,
   filePath = '',
+  fileInfo,
   basePath = '',
   formatter = null,
   $result = $('#result'),
@@ -55,7 +56,7 @@ var getFileInfo = function(filePath, formatter){
 var menuHandlers = {
 
   newFile: function (data, envelope) {
-    var formatName, fileInfo;
+    var formatName;
     
     filePath = '';
     basePath = '';
@@ -95,7 +96,7 @@ var menuHandlers = {
     options.filters.unshift(allFormats);
 
     dialogs.openFile(options).then(function (response) {
-      var fileInfo;
+     
       
       filePath = response.path;
       basePath = path.dirname(filePath);

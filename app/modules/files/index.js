@@ -63,7 +63,7 @@ var handlers = {
 		messenger.publish.file('contentChanged', selectedFileInfo);
 	}
 };
-
+module.files = files;
 module.isFileOpen = function(filePath){
 	var result = false;
 	

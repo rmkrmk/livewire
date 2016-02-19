@@ -88,4 +88,4 @@ var openExternalLinksInBrowser = function (e) {
   }
 };
 
-document.addEventListener('click', openExternalLinksInBrowser, false);
+$result.on('click', openExternalLinksInBrowser);

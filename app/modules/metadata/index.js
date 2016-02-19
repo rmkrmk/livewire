@@ -1,61 +1,57 @@
+/* global ace */
 module = module.exports;
+var controls = require('./controls.json'),
+	tags = require('./tags.json'),
+	editor = ace.edit('editor');
 
-// var 
-// 	row = "<tr><td><%= shortcut %></td><td><%= description %></td></tr>",
-// 	html = '',
-// 	
-// 	ipc = require('ipc'),
-// 	isMac = false,
-// 	isPC = true,
-// 	
-// 	shortcuts = require('./shortcuts.js'),
-// 	path = require('path'),
-// 	messenger = require(path.resolve(__dirname, '../messenger')),
-// 	
-// 	$helpContainer = $('#help-container'),
-// 	$shortcutsTbody = $('#shortcuts-tbody'),
-// 	$helpClose = $('#help-close-button');
-// 
-// ipc.on('isMac', function(e){
-// 	isMac = true;
-// 	isPC = false;
-// });
+var tagItemTemplate = "<option><a>${tag}</a></option>",
+	html = '',
+	controlItemTemplate = "<option><a>${control}</a></option>",
+	htmlControls = '';
 
-$(function(){
-	
-	// $helpContainer = $('#help-container');
-	// $shortcutsTbody = $('#shortcuts-tbody');
-	// $helpClose = $('#help-close-button');
-	// 
-	// shortcuts.forEach(function(shortcut){
-	// 	html += row
-	// 			.replace('<%= shortcut %>', shortcut.shortcut)
-	// 			.replace('<%= description %>', shortcut.description);
-	// });
-	// 
-	// if(isMac){
-	// 	html = html.replace(/CmdOrCtrl/gi, 'cmd');
-	// }
-	// 
-	// if(isPC){
-	// 	html = html.replace(/CmdOrCtrl/gi, 'ctrl');		
-	// }
-	// 
-	// $shortcutsTbody.html(html);
-	// 
-	// $helpClose.click(function(){
-	// 	handlers.helpToggle();
-	// });
-	
-	$("#editMetadata").on('click', function(e){
-		$("#editMetadataDialog").modal();
+$(function () {
+	for (var i = 0; i < tags.length; i++) {
+		// TODO: replace with language?
+		html += tagItemTemplate.replace("${tag}", tags[i]["EN_NAME"]);
+	}
+	for (var i = 0; i < controls["IgniteUI"].length; i++) {
+		// TODO: replace with language?
+		htmlControls += controlItemTemplate.replace("${control}", controls["IgniteUI"][i]);
+	}
+
+	$("#tagsSelect").html(html);
+	$("#controlsSelect").html(htmlControls);
+
+
+	$('#tagsSelect').change(function () {
+		$("#tagsInput").val($(this).val());
+	});
+	$('#controlsSelect').change(function () {
+		$("#controlsInput").val($(this).val());
+
+	});
+
+	$("#editMetadataDialog").on('show.bs.modal', function (e) {
+
+		if (!editor.metadata) { }
+		else {
+			$("#fileNameInput").val(editor.metadata.fileName);
+			$("#tagsInput").val(editor.metadata.tags);
+			$("#tagsSelect").val(editor.metadata.tags);
+			$("#controlsInput").val(editor.metadata.controlName);
+			$("#controlsSelect").val(editor.metadata.controlName);
+		}
 	});
 	
-	// var handlers = {
-	// 	helpToggle: function(){
-	// 		$helpContainer.toggle('fast');
-	// 	}
-	// };
-	// 
-	// messenger.subscribe.dialog('help.open', handlers.helpToggle);
+	$("#metaDoneBtn").on('click', function () {
+		if (editor.metadata) {
+			editor.metadata.fileName = $("#fileNameInput").val();
+			editor.metadata.tags = $("#tagsSelect").val();
+			editor.metadata.controlName = $("#controlsSelect").val();
+		}
+	});
+
+	$("#editMetadata").on('click', function (e) {
+		$("#editMetadataDialog").modal();
+	});
 });
